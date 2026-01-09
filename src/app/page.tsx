@@ -54,18 +54,20 @@ export default function Home() {
             >
               <div className="absolute inset-0 bg-black dark:bg-white translate-y-full group-hover:translate-y-[0%] transition-transform duration-300 ease-in-out opacity-[0.02] dark:opacity-[0.05]"></div>
 
-              <div className="relative z-10">
-                <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 mb-6 group-hover:scale-110 transition-transform">
-                  <i
-                    className={`fas text-xl text-zinc-800 dark:text-zinc-200 ${item.icon}`}
-                  ></i>
+              <div className="relative z-10 flex items-center gap-5">
+                {/* Container Ikon */}
+                <div className="w-14 h-14 shrink-0 flex items-center justify-center rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 group-hover:scale-110 transition-transform">
+                  <i className={`fas text-xl text-zinc-800 dark:text-zinc-200 ${item.icon}`}></i>
                 </div>
-                <h3 className="font-bold text-xl mb-2 text-black dark:text-white">
-                  {item.title}
-                </h3>
-                <p className="text-sm text-zinc-500 dark:text-zinc-500 leading-relaxed">
-                  {item.desc}
-                </p>
+
+                <div>
+                  <h3 className="font-bold text-xl text-black dark:text-white leading-none mb-1">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-zinc-500 dark:text-zinc-500 leading-relaxed">
+                    {item.desc}
+                  </p>
+                </div>
               </div>
             </Link>
           ))}
