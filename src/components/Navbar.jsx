@@ -7,26 +7,48 @@ export default function Navbar() {
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    const isDark = document.documentElement.classList.contains("dark");
-    setDarkMode(isDark);
+    // 1. Cek apakah ada preference di localStorage atau ikuti sistem Windows
+    const themeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    
+    const checkTheme = () => {
+      const isDark = document.documentElement.classList.contains("dark") || 
+                     (!("theme" in localStorage) && themeQuery.matches);
+      
+      setDarkMode(isDark);
+      if (isDark) {
+        document.documentElement.classList.add("dark");
+      }
+    };
 
+    checkTheme();
+
+    // 2. Listener untuk scroll
     const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    
+    // 3. Listener jika user ganti tema di Windows pas web lagi dibuka
+    themeQuery.addEventListener("change", checkTheme);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      themeQuery.removeEventListener("change", checkTheme);
+    };
   }, []);
 
   const toggleDarkMode = () => {
-    const newMode = !darkMode;
-    setDarkMode(newMode);
-    if (newMode) {
-      document.documentElement.classList.add("dark");
-    } else {
+    if (darkMode) {
       document.documentElement.classList.remove("dark");
+      localStorage.theme = "light";
+      setDarkMode(false);
+    } else {
+      document.documentElement.classList.add("dark");
+      localStorage.theme = "dark";
+      setDarkMode(true);
     }
   };
 
   return (
-    <nav className={`sticky top-0 z-50 border-b backdrop-blur-md transition-all duration-300 ${scrolled ? 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-deep-black' : 'border-transparent bg-transparent'} `} >
+    <nav className={`sticky top-0 z-50 border-b backdrop-blur-md transition-all duration-300 ${scrolled ? 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950' : 'border-transparent bg-transparent'} `} >
       <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
         <Link href="/" className="text-xl font-black tracking-tighter text-black dark:text-white uppercase italic">
           naintech<span className="text-zinc-400">.</span>

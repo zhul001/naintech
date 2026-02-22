@@ -21,8 +21,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id">
+    // TAMBAHKAN suppressHydrationWarning di sini
+    <html lang="id" suppressHydrationWarning>
       <head>
+        {/* TAMBAHKAN Script ini supaya tema Windows langsung terbaca sebelum page load */}
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+              document.documentElement.classList.add('dark')
+            } else {
+              document.documentElement.classList.remove('dark')
+            }
+          `,
+        }} />
         <link 
           rel="stylesheet" 
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
