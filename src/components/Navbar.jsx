@@ -4,10 +4,9 @@ import Link from 'next/link';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(typeof window !== 'undefined' ? document.documentElement.classList.contains('dark') : false);
 
   useEffect(() => {
-    // 1. Cek apakah ada preference di localStorage atau ikuti sistem Windows
     const themeQuery = window.matchMedia("(prefers-color-scheme: dark)");
     
     const checkTheme = () => {
@@ -22,11 +21,9 @@ export default function Navbar() {
 
     checkTheme();
 
-    // 2. Listener untuk scroll
     const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll);
     
-    // 3. Listener jika user ganti tema di Windows pas web lagi dibuka
     themeQuery.addEventListener("change", checkTheme);
 
     return () => {
