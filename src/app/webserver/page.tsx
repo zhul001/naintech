@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import dynamic from 'next/dynamic';
 
 // Komponen reusable untuk Step
 interface StepProps {
@@ -42,7 +42,6 @@ const StepComponent = ({ step }: { step: StepProps }) => {
       </div>
 
       <div className="space-y-4">
-        {/* Terminal Command Box */}
         {step.command && (
           <div className="bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden shadow-sm border border-zinc-200 dark:border-zinc-800">
             <div className="px-5 py-3 flex justify-between items-center border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30">
@@ -64,14 +63,12 @@ const StepComponent = ({ step }: { step: StepProps }) => {
           </div>
         )}
 
-        {/* Description Text */}
         {step.description && (
           <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed px-2">
             {step.description}
           </p>
         )}
 
-        {/* Notes Box */}
         {step.notes && step.notes.length > 0 && (
           <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm transition-all hover:border-zinc-300 dark:hover:border-zinc-700">
             <ul className="space-y-3 text-sm text-zinc-500 dark:text-zinc-400">
@@ -85,7 +82,6 @@ const StepComponent = ({ step }: { step: StepProps }) => {
           </div>
         )}
 
-        {/* Configuration Content Box */}
         {step.config && (
           <div className="bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden shadow-sm border border-zinc-200 dark:border-zinc-800">
             <div className="px-5 py-3 flex justify-between items-center border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30">
@@ -111,13 +107,7 @@ const StepComponent = ({ step }: { step: StepProps }) => {
   );
 };
 
-export default function WebServerPage() {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
+function WebServerContent() {
   const steps = {
     step1: { 
       id: 1, 
@@ -198,24 +188,21 @@ $result = $conn->query("SELECT * FROM siswa");
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 p-5 md:p-10">
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-4xl mx-auto text-zinc-900">
         <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center">Manajemen Data Siswa</h1>
-
-        <div class="bg-white p-6 rounded-xl shadow-md mb-10 text-zinc-900">
+        <div class="bg-white p-6 rounded-xl shadow-md mb-10">
             <h2 class="text-lg font-semibold mb-4 text-gray-700">Tambah Siswa Baru</h2>
             <form method="POST" class="flex flex-col md:flex-row gap-4">
                 <input type="text" name="nama" placeholder="Nama Lengkap" required 
-                    class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                    class="flex-1 p-3 border border-gray-300 rounded-lg outline-none">
                 <input type="text" name="jurusan" placeholder="Jurusan" required 
-                    class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-                <button type="submit" 
-                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200">
+                    class="flex-1 p-3 border border-gray-300 rounded-lg outline-none">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200">
                     Tambah
                 </button>
             </form>
         </div>
-
-        <div class="bg-white rounded-xl shadow-md overflow-hidden text-zinc-900">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-gray-50 border-b">
@@ -234,21 +221,31 @@ $result = $conn->query("SELECT * FROM siswa");
                         </td>
                     </tr>
                     <?php endwhile; ?>
-                    <?php if ($result->num_rows == 0): ?>
-                    <tr>
-                        <td colspan="3" class="p-10 text-center text-gray-400">Belum ada data siswa.</td>
-                    </tr>
-                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
     </div>
 </body>
 </html>`
-    }
+    },
+    step7: {
+      id: 8,
+      title: "Konfigurasi Virtual Host (Domain)",
+      command: "nano /etc/apache2/sites-available/sekolah.conf",
+      description: "Buat file konfigurasi agar website bisa diakses menggunakan domain khusus.",
+      config: `<VirtualHost *:80>\n    ServerName nain.com\n    DocumentRoot /var/www/html/web\n    <Directory /var/www/html/web>\n        AllowOverride All\n        Require all granted\n    </Directory>\n</VirtualHost>`,
+    },
+    step8: {
+      id: 9,
+      title: "Aktifkan Domain Baru",
+      command: "a2ensite sekolah.conf && systemctl restart apache2",
+      notes: [
+        "Gunakan 'a2ensite' untuk mendaftarkan file konfigurasi",
+        "Restart apache untuk menerapkan perubahan",
+        "Sekarang buka browser di komputer host dan akses nain.com",
+      ],
+    },
   };
-
-  if (!isClient) return null;
 
   return (
     <div className="selection:bg-zinc-100 dark:selection:bg-zinc-800">
@@ -274,6 +271,7 @@ $result = $conn->query("SELECT * FROM siswa");
               <div className="h-px grow bg-zinc-200 dark:bg-zinc-800"></div>
             </div>
 
+            {/* Langkah 1 - 6 */}
             <StepComponent step={steps.step1} />
             <StepComponent step={steps.step2} />
             <StepComponent step={steps.step3} />
@@ -281,36 +279,45 @@ $result = $conn->query("SELECT * FROM siswa");
             <StepComponent step={steps.step5} />
             <StepComponent step={steps.step6} />
 
-            {/* Step 7 - Testing */}
+            {/* Step 7 - Verifikasi via IP */}
             <div className="space-y-6">
               <div className="flex items-center gap-4">
                 <div className="h-10 w-10 shrink-0 rounded-xl bg-black dark:bg-white text-white dark:text-black flex items-center justify-center font-black text-lg shadow-md">
                   7
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold text-black dark:text-white tracking-tight">
-                  Verifikasi Akhir
+                  Verifikasi Akses IP
                 </h3>
               </div>
-
               <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm transition-all hover:border-zinc-300 dark:hover:border-zinc-700">
                 <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
-                  Sekarang buka browser di komputer host dan akses alamat berikut untuk melihat hasil website yang telah dibuat:
+                  Sebelum setting domain, pastikan aplikasi PHP sudah berjalan normal dengan mengakses alamat IP:
                   <br /><br />
                   <a 
                     href="http://192.168.10.28/web" 
-                    className="relative inline-block text-black dark:text-white font-bold no-underline group"
+                    className="relative inline-block text-black dark:text-white font-bold group" 
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     http://192.168.10.28/web
-                    <span className="absolute left-0 -bottom-0.5 w-0 h-px bg-black dark:bg-white transition-all duration-300 ease-in-out group-hover:w-full"></span>
+                    <span className="absolute left-0 -bottom-0.5 w-0 h-px bg-black dark:bg-white transition-all duration-300 group-hover:w-full"></span>
                   </a>
                 </p>
               </div>
             </div>
+
+            {/* Langkah 8 & 9 (Data dari Object) */}
+            <StepComponent step={steps.step7} />
+            <StepComponent step={steps.step8} />
+
           </section>
         </main>
       </div>
     </div>
   );
 }
+
+// Gunakan dynamic export untuk mematikan SSR dan menghilangkan error setState
+export default dynamic(() => Promise.resolve(WebServerContent), {
+  ssr: false
+});
