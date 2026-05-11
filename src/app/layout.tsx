@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import dynamic from "next/dynamic";
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
-// Import Navbar secara dinamis dengan ssr: false
-// Ini solusi supaya tidak bentrok antara tema server dan client
-const Navbar = dynamic(() => import("@/components/Navbar"), { 
-  ssr: false 
-});
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],

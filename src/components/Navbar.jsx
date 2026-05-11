@@ -8,22 +8,31 @@ export default function Navbar() {
 
   useEffect(() => {
     const themeQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    
+
     const checkTheme = () => {
-      const isDark = document.documentElement.classList.contains("dark") || 
-                     (!("theme" in localStorage) && themeQuery.matches);
+      // Prioritaskan localStorage dulu, baru fallback ke system preference
+      const savedTheme = localStorage.getItem("theme");
+      const isDark =
+        savedTheme === "dark" ||
+        (savedTheme === null && themeQuery.matches);
+
       setDarkMode(isDark);
-      if (isDark) document.documentElement.classList.add("dark");
+
+      if (isDark) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
     };
 
     checkTheme();
 
     const handleScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
     themeQuery.addEventListener("change", checkTheme);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
       themeQuery.removeEventListener("change", checkTheme);
     };
   }, []);
@@ -31,36 +40,46 @@ export default function Navbar() {
   const toggleDarkMode = () => {
     if (darkMode) {
       document.documentElement.classList.remove("dark");
-      localStorage.theme = "light";
+      localStorage.setItem("theme", "light");
       setDarkMode(false);
     } else {
       document.documentElement.classList.add("dark");
-      localStorage.theme = "dark";
+      localStorage.setItem("theme", "dark");
       setDarkMode(true);
     }
   };
 
   return (
-    <nav className={`sticky top-0 z-50 border-b backdrop-blur-md transition-all duration-300 ${
-      scrolled ? 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950' : 'border-transparent bg-transparent'
-    }`}>
+    <nav
+      className={`sticky top-0 z-50 border-b backdrop-blur-md transition-all duration-300 ${
+        scrolled
+          ? "border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-950/90"
+          : "border-transparent bg-transparent"
+      }`}
+    >
       <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
-        <Link href="/" className="text-xl font-black tracking-tighter text-black dark:text-white uppercase italic">
+        <Link
+          href="/"
+          className="text-xl font-black tracking-tighter text-black dark:text-white uppercase italic"
+        >
           naintech<span className="text-zinc-400">.</span>
         </Link>
 
         <div className="flex items-center gap-3">
-          <Link href="/" className="w-10 h-10 flex items-center justify-center rounded-full border border-zinc-200 dark:border-zinc-800 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-300">
+          <Link
+            href="/"
+            className="w-10 h-10 flex items-center justify-center rounded-full border border-zinc-200 dark:border-zinc-800 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-300"
+          >
             <i className="fas fa-home text-sm"></i>
           </Link>
 
-          <button 
-            onClick={toggleDarkMode} 
+          <button
+            onClick={toggleDarkMode}
             className="flex items-center gap-2 px-5 py-2 rounded-full border border-zinc-900 dark:border-zinc-100 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black transition-all active:scale-95 cursor-pointer"
           >
-            <i className={`fas ${darkMode ? 'fa-sun' : 'fa-moon'}`}></i>
+            <i className={`fas ${darkMode ? "fa-sun" : "fa-moon"}`}></i>
             <span className="text-[10px] font-black uppercase tracking-[0.2em]">
-              {darkMode ? 'Light' : 'Dark'}
+              {darkMode ? "Light" : "Dark"}
             </span>
           </button>
         </div>
