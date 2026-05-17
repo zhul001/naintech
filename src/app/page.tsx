@@ -15,6 +15,7 @@ const modules = [
   { title: "Panel Server", desc: "Manajemen sistem via Webmin", icon: "fa-gauge-high", link: "https://webmin.com/download/" },
   { title: "Kontainer", desc: "Virtualisasi OS via Docker", icon: "fa-docker", link: "https://docs.docker.com/engine/install/debian/" },
   { title: "Kontainer", desc: "GUI manajemen Docker via portainer", icon: "fa-cubes", link: "https://docs.portainer.io/start/install-ce/server/docker/linux#docker-compose" },
+  { title: "LibreNMS", desc: "Monitoring jaringan berbasis open-source", icon: "fa-tower-broadcast", link: "/librenms" },
 ];
 
 export default function Home() {
